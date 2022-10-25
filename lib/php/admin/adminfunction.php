@@ -478,9 +478,6 @@ function getPoi($start, $limit, $asc, $sort, $dir)
 							AND poi.pole_id_pole = ' . $_SESSION["pole"] . ' 
 							AND priorite.non_visible_par_collectivite = 0 ';
             } 
-//             elseif ($_SESSION["type"] == 4) {
-//                 $whereClause .= ' AND poi.pole_id_pole IN (' . $_SESSION["pole"] . ') ';
-//             }
             $sql = "SELECT poi.*, subcategory.lib_subcategory, commune.lib_commune, pole.lib_pole, quartier.lib_quartier, priorite.lib_priorite, status.lib_status, x(poi.geom_poi) AS X, y(poi.geom_poi) AS Y FROM poi INNER JOIN subcategory ON (subcategory.id_subcategory = poi.subcategory_id_subcategory) INNER JOIN commune ON (commune.id_commune = poi.commune_id_commune) INNER JOIN pole ON (pole.id_pole = poi.pole_id_pole) INNER JOIN quartier ON (quartier.id_quartier = poi.quartier_id_quartier) INNER JOIN priorite ON (priorite.id_priorite = poi.priorite_id_priorite) INNER JOIN status ON (status.id_status = poi.status_id_status) WHERE $whereClause ";
             
             $sql .= " ORDER BY ";
@@ -762,7 +759,6 @@ Lien vers la modération : " . URL . '/admin.php?id=' . $arrayObs['id_poi'] . "<
                         }
                     }
                 }
-                // }
             } else {
                 // aucune mise à jour n'a été effectuée, car aucune information n'a été modifiée
                 echo 2;
@@ -991,20 +987,14 @@ function deletePoisCorbeille()
             if (sizeof($idpois) < 1) {
                 echo '0';
             } else if (sizeof($idpois) == 1) {
-                // $sql = "DELETE FROM poi WHERE id_poi = ".$idpois[0];
                 $sql = "UPDATE poi SET delete_poi = TRUE WHERE id_poi = " . $idpois[0];
                 $result = mysql_query($sql);
             } else {
                 $sql = "DELETE FROM poi WHERE ";
                 for ($i = 0; $i < sizeof($idpois); $i ++) {
-                    /*
-                     * $sql = $sql . "id_poi = ".$idpois[$i]; if ($i < sizeof($idpois) - 1){ $sql = $sql . " OR "; }
-                     */
-                    
                     $sql = "UPDATE poi SET delete_poi = TRUE WHERE id_poi = " . $idpois[$i];
                     $result = mysql_query($sql);
                 }
-                // $result = mysql_query($sql);
             }
             if (! $result) {
                 echo '2';
@@ -1216,8 +1206,6 @@ function updatePole()
             
             $sql = "UPDATE pole SET lib_pole = '$lib_pole' WHERE id_pole = $id_pole";
             $result = mysql_query($sql);
-            // $sql = "UPDATE pole SET id_pole = $id_pole WHERE lib_pole = '$lib_pole'";
-            // $result = mysql_query($sql);
             if (! $result) {
                 echo '2';
             } else {
@@ -1343,113 +1331,6 @@ function getQuartier($start, $limit)
             break;
     }
 }
-
-/*
- * Function name : updateQuartier Input : Output : success => '1' / failed => '2' Object : update quartier grid Date : May 2, 2012
- */
-
-// function updateQuartier() {
-// switch (SGBD) {
-// case 'mysql':
-// $link = mysql_connect(DB_HOST,DB_USER,DB_PASS);
-// mysql_select_db(DB_NAME);
-// mysql_query("SET NAMES utf8mb4");
-
-// $id_quartier = $_POST['id_quartier'];
-// $lib_quartier = $_POST['lib_quartier'];
-
-// $sql = "UPDATE quartier SET lib_quartier = '$lib_quartier' WHERE id_quartier = $id_quartier";
-// $result = mysql_query($sql);
-// if (!$result) {
-// echo '2';
-// } else {
-// echo '1';
-// }
-
-// mysql_free_result($result);
-// mysql_close($link);
-// break;
-// case 'postgresql':
-// // TODO
-// break;
-// }
-
-// }
-
-/*
- * Function name : createQuartier Input : Output : success => '1' / failed => '2' Object : create quartier Date : May 2, 2012
- */
-
-// function createQuartier() {
-// switch (SGBD) {
-// case 'mysql':
-// $link = mysql_connect(DB_HOST,DB_USER,DB_PASS);
-// mysql_select_db(DB_NAME);
-// mysql_query("SET NAMES utf8mb4");
-
-// $lib_quartier = mysql_real_escape_string($_POST['lib_quartier']);
-
-// $sql = "INSERT INTO quartier (lib_quartier) VALUES ('$lib_quartier')";
-// $result = mysql_query($sql);
-// if (!$result) {
-// echo '2';
-// } else {
-// echo '1';
-// }
-
-// mysql_free_result($result);
-// mysql_close($link);
-// break;
-// case 'postgresql':
-// // TODO
-// break;
-// }
-// }
-
-/*
- * Function name : deleteQuartiers Input : Output : success => '1' / failed => '2' Object : delete quartier(s) Date : May 2, 2012
- */
-
-// function deleteQuartiers() {
-// $ids = $_POST['ids'];
-// $idquartiers = json_decode(stripslashes($ids));
-
-// switch (SGBD) {
-// case 'mysql':
-// $link = mysql_connect(DB_HOST,DB_USER,DB_PASS);
-// mysql_select_db(DB_NAME);
-// mysql_query("SET NAMES utf8mb4");
-
-// if (sizeof($idquartiers) < 1){
-// echo '0';
-// } else if (sizeof($idquartiers) == 1){
-// $sql = "DELETE FROM quartier WHERE id_quartier = ".$idquartiers[0];
-// $result = mysql_query($sql);
-// } else {
-// $sql = "DELETE FROM quartier WHERE ";
-// for ($i = 0; $i < sizeof($idquartiers); $i++){
-// $sql = $sql . "id_quartier = ".$idquartiers[$i];
-// if ($i < sizeof($idquartiers) - 1){
-// $sql = $sql . " OR ";
-// }
-// }
-// $result = mysql_query($sql);
-// }
-// if (!$result) {
-// echo '2';
-// } else {
-// echo '1';
-// }
-
-// mysql_free_result($result);
-// mysql_close($link);
-// break;
-// case 'postgresql':
-// // TODO
-// break;
-// }
-
-// }
 
 /*
  * Function name : getPriorite Input : start, limit Output : json priorites Object : populate priorite grid Date : May 3, 2012
@@ -1867,7 +1748,6 @@ function getLinksUserPole($start, $limit)
                 echo '({"total":"0", "results":""})';
             }
             if (DEBUG) {
-                // error_log(date("Y-m-d H:i:s") . " " .__FUNCTION__ . " - " . getLocations($latitude_poi,$longitude_poi)[1]."\n", 3, LOG_FILE);
                 error_log(date("Y-m-d H:i:s") . " " . __FUNCTION__ . " - nbrows - " . $nbrows . "\n", 3, LOG_FILE);
             }
             mysql_free_result($result);
@@ -1943,7 +1823,6 @@ function getUsers($start, $limit)
             
             $sql = "SELECT users.*, usertype.lib_usertype FROM users INNER JOIN usertype ON (usertype.id_usertype = users.usertype_id_usertype) ORDER BY id_users ASC";
             if (DEBUG) {
-                // error_log(date("Y-m-d H:i:s") . " " .__FUNCTION__ . " - " . getLocations($latitude_poi,$longitude_poi)[1]."\n", 3, LOG_FILE);
                 error_log(date("Y-m-d H:i:s") . " " . __FUNCTION__ . " - sql - " . $sql . "\n", 3, LOG_FILE);
             }
             $result = mysql_query($sql);
@@ -1969,7 +1848,6 @@ function getUsers($start, $limit)
                 echo '({"total":"0", "results":""})';
             }
             if (DEBUG) {
-                // error_log(date("Y-m-d H:i:s") . " " .__FUNCTION__ . " - " . getLocations($latitude_poi,$longitude_poi)[1]."\n", 3, LOG_FILE);
                 error_log(date("Y-m-d H:i:s") . " " . __FUNCTION__ . " - nbrows - " . $nbrows . "\n", 3, LOG_FILE);
             }
             mysql_free_result($result);
@@ -1994,7 +1872,6 @@ function getUser()
             
             $sql = "SELECT users.*, usertype.lib_usertype FROM users INNER JOIN usertype ON (usertype.id_usertype = users.usertype_id_usertype) WHERE lib_users = '" . $_SESSION['user'] . "'";
             if (DEBUG) {
-                // error_log(date("Y-m-d H:i:s") . " " .__FUNCTION__ . " - " . getLocations($latitude_poi,$longitude_poi)[1]."\n", 3, LOG_FILE);
                 error_log(date("Y-m-d H:i:s") . " " . __FUNCTION__ . " - sql - " . $sql . "\n", 3, LOG_FILE);
             }
             $result = mysql_query($sql);
@@ -2018,7 +1895,6 @@ function getUser()
                 echo '({"total":"0", "results":""})';
             }
             if (DEBUG) {
-                // error_log(date("Y-m-d H:i:s") . " " .__FUNCTION__ . " - " . getLocations($latitude_poi,$longitude_poi)[1]."\n", 3, LOG_FILE);
                 error_log(date("Y-m-d H:i:s") . " " . __FUNCTION__ . " - nbrows - " . $nbrows . "\n", 3, LOG_FILE);
             }
             mysql_free_result($result);
@@ -2047,7 +1923,6 @@ function resetUserPassword()
             
             $sql = "UPDATE users SET pass_users = '$pass_users' WHERE id_users = $userId";
             if (DEBUG) {
-                // error_log(date("Y-m-d H:i:s") . " " .__FUNCTION__ . " - " . getLocations($latitude_poi,$longitude_poi)[1]."\n", 3, LOG_FILE);
                 error_log(date("Y-m-d H:i:s") . " " . __FUNCTION__ . " - sql - " . $sql . ", mot de passe \n", 3, LOG_FILE);
             }
             
@@ -2481,10 +2356,7 @@ function createPublicPoi()
                 }
                 $dossier = '../../../resources/pictures/';
                 $fichier = basename($_FILES['photo-path']['name']);
-//                 $taille_maxi = 6291456;
-//                 $taille = filesize($_FILES['photo-path']['tmp_name']);
                 $taille_maxi = maximum_upload_size();
-                //$taille_maxi = 6291456;
                 $taille = filesize($_FILES['photo-path']['tmp_name']);
                 if (DEBUG) {
                     error_log(date("Y-m-d H:i:s") . " " . __FUNCTION__ . " image size =  " . $taille . ", and apache upload_max_filesize = ".$taille_maxi."\n", 3, LOG_FILE);
@@ -2616,7 +2488,6 @@ Lien vers la modération : \n" . URL . '/admin.php?id=' . $arrayObs['id_poi'] . 
                         if (DEBUG) {
                             error_log(date("Y-m-d H:i:s") . " " . __FUNCTION__ . " Il y a " . count($mails) . " mails à envoyer \n", 3, LOG_FILE);
                         }
-                        // $succes = sendMails($mails);
                         
                         /* debut envoi d'un mail au contributeur */
                         $subject = 'Observation en attente de modération';
@@ -3088,7 +2959,6 @@ function createPublicComment()
                 $fichier = basename($_FILES['photo-path']['name']);
                 
                 $taille_maxi = maximum_upload_size();
-                //$taille_maxi = 6291456;
                 $taille = filesize($_FILES['photo-path']['tmp_name']);
                 if (DEBUG) {
                     error_log(date("Y-m-d H:i:s") . " " . __FUNCTION__ . " image size =  " . $taille . ", and apache upload_max_filesize = ".$taille_maxi."\n", 3, LOG_FILE);
