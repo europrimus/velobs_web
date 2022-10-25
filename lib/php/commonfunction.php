@@ -38,7 +38,6 @@
 				$result = mysql_query($sql);
 				while ($row = mysql_fetch_array($result)) {
 					if (isWithinPolygons($row['geom'], $latitude_poi, $longitude_poi)) {												
-						//echo "Is in polygon!";
 						$commune_id_commune = $row['id_commune'];
 						$lib_commune = $row['lib_commune'];
 					}
@@ -49,7 +48,6 @@
 				$result = mysql_query($sql);
 				while ($row = mysql_fetch_array($result)) {
 					if (isWithinPolygons($row['geom'], $latitude_poi, $longitude_poi)){	
-						//echo "Is in polygon!";
 						$pole_id_pole = $row['id_pole'];
 						$lib_pole = $row['lib_pole'];
 					}
@@ -125,7 +123,6 @@
 	*/
 	function generate_image_thumbnail($source_image_path, $thumbnail_image_path, $width, $height) {
 		list($source_image_width, $source_image_height, $source_image_type) = getimagesize($source_image_path);
-		//	echo $source_image_path." ".$source_image_type;
 		switch ($source_image_type)	{
 			case IMAGETYPE_GIF:
 				$source_gd_image = imagecreatefromgif($source_image_path);
@@ -157,7 +154,6 @@
 		} else {
 			$thumbnail_image_height = (int) ($thumbnail_image_width / $source_aspect_ratio);
 		}
-		//echo $thumbnail_image_width." ".$thumbnail_image_height;
 		$thumbnail_gd_image = imagecreatetruecolor($thumbnail_image_width, $thumbnail_image_height);
 	
 		imagealphablending($thumbnail_gd_image, false);
@@ -439,11 +435,6 @@
 		$arrayColumns[$numberOfColumns]['columnPOST'] = 'datefix_poi' ;
 		$arrayColumns[$numberOfColumns]['columnIntitule'] = 'Date de clôture de l\'observation' ;
 		$arrayColumns[$numberOfColumns]['dataType'] = 'Date' ;
-// 		$numberOfColumns++;
-// 		$arrayColumns[$numberOfColumns]['columnSQL'] = 'fix_poi' ;
-// 		$arrayColumns[$numberOfColumns]['columnPOST'] = 'fix_poi' ;
-// 		$arrayColumns[$numberOfColumns]['columnIntitule'] = 'fix_poi (?)' ;
-// 		$arrayColumns[$numberOfColumns]['dataType'] = 'boolean' ;
 		$numberOfColumns++;
 		//info personne qui a remonté l'observationr
 		$arrayColumns[$numberOfColumns]['columnSQL'] = 'adherent_poi' ;
@@ -562,22 +553,11 @@
 							$pole_id_pole = $locations[2];
 							$lib_pole = $locations[3];
 							if ($arrayObservation['commune_id_commune'] != $commune_id_commune){
-							   // $sqlUpdate .= ", commune_id_commune = $commune_id_commune";
 							    $_POST['commune_id_commune'] = $commune_id_commune;
 							}
 							if ($arrayObservation['pole_id_pole'] != $pole_id_pole){
-							   // $sqlUpdate .= ", pole_id_pole = $pole_id_pole";
 							    $_POST['pole_id_pole'] = $pole_id_pole;
 							}
-// 							if ($commune_id_commune == 99999) {
-// 							    if (DEBUG) {
-// 							        error_log(date("Y-m-d H:i:s") . " " . __FUNCTION__ . " L'observation semble être dans une zone non couverte par velobs\n", 3, LOG_FILE);
-// 							    }
-// 							    $erreur = "L'observation semble être dans une zone non couverte par VelObs, si ce n'est pas le cas, merci de nous contacter à l'adresse " . MAIL_FROM;
-// 							    $return['success'] = false;
-// 							    $return['pb'] = $erreur;
-// 							}
-							
 						}
 						
 					}else{
@@ -635,7 +615,6 @@
 								$OldValue = $arrayObservation['lib_'.$tableName];
 								//si la priorite change, on modifie par défaut le champ moderation
 								$_POST['moderation_poi'] = 'true';
-								//$sqlUpdate .= ", moderation_poi = 1";
 								break;
 					}
 					if ($arrayColumns[$i]['dataType'] == 'boolean'){
@@ -678,8 +657,6 @@
 						}
 					}
 					$DetailObservation .="<td>\n". ((strlen ( $OldValue ) > 0) ?  wordwrap(nl2br($OldValue),70) : "Non Renseigné")."</td>\n<td>\n".wordwrap(nl2br($NewValue),70)."</td>\n";
-					//$DetailObservation .= "       ".$arrayColumns [$i] ['columnIntitule'] . "\"" .((strlen ( $OldValue ) > 0) ?  $OldValue : "Non Renseigné") . "\" remplacé par \"" . $NewValue . "\"\n";
-					
 					$updateObservationBoolean = 1;
 				} 
 			}
@@ -739,7 +716,6 @@
 								break;
 						}
 					}
-					//$DetailObservation .= $arrayColumns [$i] ['columnIntitule'] . "\"" . ((strlen ( $OldValue ) > 0) ? $OldValue : "Non Renseigné") . "\"\n";
 					$DetailObservation .="<td>\n". ((strlen ( $OldValue ) > 0) ?  wordwrap(nl2br($OldValue),70) : "Non Renseigné\n")."</td>\n<td></td>\n";
 					
 				}
@@ -851,9 +827,6 @@
 	*/
 	function sendMails($mailsArray){
 		foreach ($mailsArray as $key => $value) {
-// 			if (DEBUG){
-// 				error_log(date("Y-m-d H:i:s") . " " .__FUNCTION__ . " - Clé : $key; Valeur : $value[0],  $value[1],  $value[2]\n", 3, LOG_FILE);
-// 			}
 			sendMail($value[0], $value[2], $value[3]);
 		}
 		return true;
@@ -875,7 +848,5 @@
 		}
 		$body = "<html>\n<head>\n<style\n>table, td \n{border: 1px solid black;\nborder-collapse: collapse;\n}tr:nth-child(odd)\n {background: #CCCCCC;}\nthead{background-color:#D0E3FA;\nfont-weight: bold;\n}</style>\n<title>\n".$subject."</title>\n</head>\n<body>\n".$body."</body>\n</html>\n";
 		mail($to, MAIL_SUBJECT_PREFIX . ' '.$subject, $body, $headers);
-		//mail($to, MAIL_SUBJECT_PREFIX . ' '.$subject, $body);
-	
 	}
 ?>
